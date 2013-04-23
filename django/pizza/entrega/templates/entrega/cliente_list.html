@@ -1,0 +1,11 @@
+<h1>Lista de clientes</h1>
+
+<h2>{{ object_list|length }} clientes no cadastro</h2>
+
+<ol>
+	{% for cliente in object_list %}
+		<li><a href="{% url cliente pk=cliente.id %}">{{ cliente }}</a></li>
+	{% empty %}
+		(nenhum cliente)
+	{% endfor %}
+</ol>
