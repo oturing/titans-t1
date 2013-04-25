@@ -8,6 +8,8 @@ Use o sistema de pacotes do seu GNU/Linux.
 Você precisa da conta de administrador (dá para instalar
 como usuário comum, mas é mais complicado).
 
+::
+
 	$ sudo apt-get install python-virtualenv
 	$
 
