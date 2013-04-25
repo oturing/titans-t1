@@ -13,6 +13,7 @@ como usuário comum, mas é mais complicado).
 	$ sudo apt-get install python-virtualenv
 	$
 
+
 2. Use o ``virtualenv`` para criar um ambiente dentro de um
 diretório::
 
@@ -20,16 +21,14 @@ diretório::
 	$ virtualenv --no-site-packages --distribute .meu_env
 	$
 
+
 3. Ative o ambiente (note que o prompt muda)::
 
 	$ source .meu_env/bin/activate
 	(.meu_env)$
 
+
 4. Instale os pacotes desejados no ambiente::
 
 	(.meu_env)$ pip install flask
 	(.meu_env)$
-
-
-
-
