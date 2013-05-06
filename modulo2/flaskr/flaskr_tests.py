@@ -32,6 +32,12 @@ class FlaskrTestCase(unittest.TestCase):
         rv = self.entrar('admin', 'default')
         self.assertIn('Login OK', rv.data)
 
+    def teste_login_invalido(self):
+        rv = self.entrar('adminXXX', 'default')
+        self.assertIn('Usuário inválido', rv.data)
+        rv = self.entrar('admin', 'defaultYYY')
+        self.assertIn('Senha inválida', rv.data)
+
 
 if __name__ == '__main__':
     unittest.main()
