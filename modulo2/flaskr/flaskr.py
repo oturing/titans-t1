@@ -49,7 +49,7 @@ def exibir_entradas():
 
     return render_template('exibir_entradas.html', entradas=entradas)
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/entrar', methods=['GET', 'POST'])
 def login():
     erro = None
     if request.method == 'POST':
