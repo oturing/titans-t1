@@ -63,7 +63,7 @@ def login():
             return redirect(url_for('exibir_entradas'))
     return render_template('login.html', erro=erro)
 
-@app.route('/logout')
+@app.route('/sair')
 def logout():
     session.pop('logado', None)
     flash('Logout OK')
