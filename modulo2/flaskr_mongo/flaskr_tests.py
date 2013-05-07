@@ -35,19 +35,16 @@ class FlaskrTestCase(unittest.TestCase):
                 password=senha
             ), follow_redirects=True)
 
-    @unittest.skip('migrar para MongoDB')
     def teste_login(self):
         rv = self.entrar('admin', 'default')
         self.assertIn(b'Login OK', rv.data)
 
-    @unittest.skip('migrar para MongoDB')
     def teste_login_invalido(self):
         rv = self.entrar('adminXXX', 'default')
         self.assertIn(b'Usuário inválido', rv.data)
         rv = self.entrar('admin', 'defaultYYY')
         self.assertIn(b'Senha inválida', rv.data)
 
-    @unittest.skip('migrar para MongoDB')
     def teste_sair(self):
         rv = self.app.get('/sair', follow_redirects=True)
         self.assertIn(b'Logout OK', rv.data)
@@ -56,9 +53,9 @@ class FlaskrTestCase(unittest.TestCase):
     def teste_nova_entrada(self):
         self.entrar('admin', 'default')
         rv = self.app.post('/inserir', data=dict(
-            titulo='<Olá>',
-            texto='<strong>HTML</strong> é permitido aqui'
-        ), follow_redirects=True)
+                titulo='<Olá>',
+                texto='<strong>HTML</strong> é permitido aqui'
+            ), follow_redirects=True)
         self.assertEquals(rv.status_code, 200)
         self.assertNotIn(b'nenhuma entrada', rv.data)
         self.assertIn(b'&lt;Olá&gt;', rv.data)
