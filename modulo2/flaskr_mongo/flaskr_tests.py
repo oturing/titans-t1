@@ -9,17 +9,25 @@ import pymongo
 
 import flaskr
 
+def setUpModule():
+    global cliente, nome_bd
+    cliente = pymongo.MongoClient()
+    nome_bd = str(datetime.now()).replace('.','_').replace(' ','_')
+
+def tearDownModule():
+    cliente.drop_database(nome_bd)
 
 class FlaskrTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.nome_bd = str(datetime.now()).replace('.','_').replace(' ','_')
-        flaskr.app.config['DATABASE'] = self.nome_bd
+        flaskr.app.config['DATABASE'] = nome_bd
         flaskr.app.config['TESTING'] = True
         self.app = flaskr.app.test_client()
 
     def tearDown(self):
+        '''TODO: fechar conexao com o MongoDB'''
         '''apagar BD de teste no MongoDB'''
+        flaskr.conectar_bd().drop_collection('posts')
 
     def teste_conexao_bd(self):
         bd = flaskr.conectar_bd()
@@ -49,7 +57,6 @@ class FlaskrTestCase(unittest.TestCase):
         rv = self.app.get('/sair', follow_redirects=True)
         self.assertIn(b'Logout OK', rv.data)
 
-    @unittest.skip('migrar para MongoDB')
     def teste_nova_entrada(self):
         self.entrar('admin', 'default')
         rv = self.app.post('/inserir', data=dict(

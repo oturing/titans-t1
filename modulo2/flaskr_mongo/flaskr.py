@@ -36,7 +36,7 @@ def encerrar_requisicao(exception):
 
 @app.route('/')
 def exibir_entradas():
-    entradas = g.bd.entradas.find()
+    entradas = g.bd.posts.find()
 
     return render_template('exibir_entradas.html', entradas=entradas)
 
@@ -64,13 +64,14 @@ def logout():
 def inserir_entrada():
     if not session.get('logado'):
         abort(401)
-    sql = '''insert into entradas (titulo, texto) values (?, ?)'''
-    g.bd.execute(sql, [request.form['titulo'], request.form['texto']])
-    g.bd.commit()
+
+    # insert into entradas (titulo, texto) values (?, ?)
+    post = dict(titulo=request.form['titulo'],
+                texto=request.form['texto'])
+    entradas = g.bd.posts.insert(post)
+
     flash('Nova entrada registrada com sucesso')
     return redirect(url_for('exibir_entradas'))
-
-
 
 if __name__ == '__main__':
     app.run()
