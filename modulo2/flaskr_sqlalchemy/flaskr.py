@@ -6,16 +6,20 @@ import sqlite3
 from flask import Flask, request, session, g, redirect, url_for, \
      abort, render_template, flash
 
+from flask.ext.sqlalchemy import SQLAlchemy
+
 # configuração
 DATABASE = '/tmp/flaskr.db'
 DEBUG = True
 SECRET_KEY = 'development key'
 USERNAME = 'admin'
 PASSWORD = 'default'
+SQLALCHEMY_DATABASE_URI = 'sqlite:///' + DATABASE
 
 # criar nossa pequena aplicação :)
 app = Flask(__name__)
 app.config.from_object(__name__)
+db = SQLAlchemy(app)
 
 ################################################# Configuração
 
