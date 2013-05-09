@@ -9,18 +9,16 @@ import pymongo
 
 import flaskr
 
-def setUpModule():
-    global cliente, nome_bd
-    cliente = pymongo.MongoClient()
-    nome_bd = str(datetime.now()).replace('.','_').replace(' ','_')
+CLIENTE = pymongo.MongoClient()
+NOME_BD = str(datetime.now()).replace('.','_').replace(' ','_')
 
 def tearDownModule():
-    cliente.drop_database(nome_bd)
+    CLIENTE.drop_database(NOME_BD)
 
 class FlaskrTestCase(unittest.TestCase):
 
     def setUp(self):
-        flaskr.app.config['DATABASE'] = nome_bd
+        flaskr.app.config['DATABASE'] = NOME_BD
         flaskr.app.config['TESTING'] = True
         self.app = flaskr.app.test_client()
 
