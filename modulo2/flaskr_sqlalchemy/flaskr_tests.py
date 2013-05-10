@@ -11,7 +11,9 @@ import flaskr
 class FlaskrTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.bd_arq, flaskr.app.config['DATABASE'] = tempfile.mkstemp()
+        self.bd_arq, nome_bd = tempfile.mkstemp()
+        flaskr.app.config['DATABASE'] = nome_bd
+        flaskr.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + nome_bd
         flaskr.app.config['TESTING'] = True
         self.app = flaskr.app.test_client()
         flaskr.criar_bd()
@@ -44,16 +46,20 @@ class FlaskrTestCase(unittest.TestCase):
         rv = self.app.get('/sair', follow_redirects=True)
         self.assertIn(b'Logout OK', rv.data)
 
-    def teste_nova_entrada(self):
+    def postar(self, titulo, texto):
         self.entrar('admin', 'default')
-        rv = self.app.post('/inserir', data=dict(
-            titulo='<Olá>',
-            texto='<strong>HTML</strong> é permitido aqui'
-        ), follow_redirects=True)
+        return self.app.post('/inserir',
+                data=dict(titulo=titulo, texto=texto),
+                follow_redirects=True)
+
+    def teste_nova_entrada(self):
+        rv = self.postar('<Olá>', '<strong>HTML</strong> é permitido aqui')
         self.assertEquals(rv.status_code, 200)
         self.assertNotIn(b'nenhuma entrada', rv.data)
         self.assertIn(b'&lt;Olá&gt;', rv.data)
         self.assertIn(b'<strong>HTML</strong> é permitido aqui', rv.data)
+
+    #def teste_entradas_em_ordem(self):
 
 
 if __name__ == '__main__':

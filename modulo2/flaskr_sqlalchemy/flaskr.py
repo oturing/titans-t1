@@ -21,35 +21,41 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 db = SQLAlchemy(app)
 
+'''
+create table entradas (
+  id integer primary key autoincrement,
+  titulo string not null,
+  texto string not null
+);
+'''
+
+class Post(db.Model):
+    __tablename__ = 'postagens'
+
+    id = db.Column(db.Integer, primary_key=True)
+    titulo = db.Column(db.String(128), unique=True)
+    texto = db.Column(db.String(2048))
+
+    def __init__(self, titulo, texto):
+        self.titulo = titulo
+        self.texto = texto
+
+    def __repr__(self):
+        return '<Post %r>' % self.id
+
+
 ################################################# Configuração
 
-def conectar_bd():
-    return sqlite3.connect(app.config['DATABASE'])
-
 def criar_bd():
-    with closing(conectar_bd()) as bd:
-        with app.open_resource('esquema.sql') as sql:
-            bd.cursor().executescript(sql.read())
-        bd.commit()
-
-@app.before_request
-def pre_requisicao():
-    g.bd = conectar_bd()
-
-@app.teardown_request
-def encerrar_requisicao(exception):
-    g.bd.close()
-
+    db.create_all()
 
 ################################################# Views
 
 @app.route('/')
 def exibir_entradas():
-    sql = '''select titulo, texto from entradas order by id desc'''
-    cur = g.bd.execute(sql)
+    '''select titulo, texto from entradas order by id desc'''
 
-    entradas = [dict(titulo=titulo, texto=texto)
-                    for titulo, texto in cur.fetchall()]
+    entradas = Post.query.all()
 
     return render_template('exibir_entradas.html', entradas=entradas)
 
@@ -77,9 +83,13 @@ def logout():
 def inserir_entrada():
     if not session.get('logado'):
         abort(401)
-    sql = '''insert into entradas (titulo, texto) values (?, ?)'''
-    g.bd.execute(sql, [request.form['titulo'], request.form['texto']])
-    g.bd.commit()
+
+    '''insert into entradas (titulo, texto) values (?, ?)'''
+
+    post = Post(request.form['titulo'], request.form['texto'])
+    db.session.add(post)
+    db.session.commit()
+
     flash('Nova entrada registrada com sucesso')
     return redirect(url_for('exibir_entradas'))
 
