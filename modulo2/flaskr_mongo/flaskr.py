@@ -34,11 +34,13 @@ def encerrar_requisicao(exception):
 
 ################################################# Views
 
+def obter_entradas():
+    return g.bd.posts.find().sort('_id', pymongo.DESCENDING)
+
 @app.route('/')
 def exibir_entradas():
-    entradas = g.bd.posts.find()
 
-    return render_template('exibir_entradas.html', entradas=entradas)
+    return render_template('exibir_entradas.html', entradas=obter_entradas())
 
 @app.route('/entrar', methods=['GET', 'POST'])
 def login():

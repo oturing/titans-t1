@@ -55,16 +55,29 @@ class FlaskrTestCase(unittest.TestCase):
         rv = self.app.get('/sair', follow_redirects=True)
         self.assertIn(b'Logout OK', rv.data)
 
-    def teste_nova_entrada(self):
+    def postar(self, titulo, texto):
         self.entrar('admin', 'default')
-        rv = self.app.post('/inserir', data=dict(
-                titulo='<Olá>',
-                texto='<strong>HTML</strong> é permitido aqui'
-            ), follow_redirects=True)
+        return self.app.post('/inserir',
+                data=dict(titulo=titulo, texto=texto),
+                follow_redirects=True)
+
+    def teste_nova_entrada(self):
+        rv = self.postar('<Olá>', '<strong>HTML</strong> é permitido aqui')
         self.assertEquals(rv.status_code, 200)
         self.assertNotIn(b'nenhuma entrada', rv.data)
         self.assertIn(b'&lt;Olá&gt;', rv.data)
         self.assertIn(b'<strong>HTML</strong> é permitido aqui', rv.data)
+
+    def teste_entradas_em_ordem_inversa(self):
+        rv = self.postar('Noticia Um', 'bla, bla, bla')
+        self.assertEquals(rv.status_code, 200)
+        rv = self.postar('Noticia Dois', 'bla, bla, bla')
+        self.assertEquals(rv.status_code, 200)
+        with flaskr.app.test_client() as c:
+            rv = c.get('/')
+            entradas = flaskr.obter_entradas()
+        self.assertEquals(entradas[0]['titulo'], 'Noticia Dois')
+        self.assertEquals(entradas[1]['titulo'], 'Noticia Um')
 
 
 if __name__ == '__main__':
