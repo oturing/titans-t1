@@ -51,13 +51,13 @@ def criar_bd():
 
 ################################################# Views
 
+def obter_entradas():
+    '''select titulo, texto from entradas order by id desc'''
+    return Post.query.order_by(Post.id.desc())
+
 @app.route('/')
 def exibir_entradas():
-    '''select titulo, texto from entradas order by id desc'''
-
-    entradas = Post.query.all()
-
-    return render_template('exibir_entradas.html', entradas=entradas)
+    return render_template('exibir_entradas.html', entradas=obter_entradas())
 
 @app.route('/entrar', methods=['GET', 'POST'])
 def login():

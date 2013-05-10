@@ -59,8 +59,14 @@ class FlaskrTestCase(unittest.TestCase):
         self.assertIn(b'&lt;Olá&gt;', rv.data)
         self.assertIn(b'<strong>HTML</strong> é permitido aqui', rv.data)
 
-    #def teste_entradas_em_ordem(self):
-
+    def teste_entradas_em_ordem_inversa(self):
+        rv = self.postar('Noticia Um', 'bla, bla, bla')
+        self.assertEquals(rv.status_code, 200)
+        rv = self.postar('Noticia Dois', 'bla, bla, bla')
+        self.assertEquals(rv.status_code, 200)
+        entradas = flaskr.obter_entradas()
+        self.assertEquals(entradas[0].titulo, 'Noticia Dois')
+        self.assertEquals(entradas[1].titulo, 'Noticia Um')
 
 if __name__ == '__main__':
     unittest.main()
