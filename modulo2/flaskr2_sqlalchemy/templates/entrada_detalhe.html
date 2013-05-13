@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block corpo %}
+
+<h2>{{ entrada.titulo }}</h2>
+
+<div>
+<p>
+{{ entrada.texto | safe }}
+</p></div>
+
+<p>Post #{{ entrada.id }}</p>
+
+{% endblock %}
