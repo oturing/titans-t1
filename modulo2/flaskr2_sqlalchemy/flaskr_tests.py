@@ -88,7 +88,7 @@ class FlaskrTestCase(unittest.TestCase):
         self.assertIn(b'<form', rv.data)
         comentario = dict(nome='Fulano de Tal',
                           email='fu@tal.com',
-                          texto='Aqui <b>não</b> pode HTML')
+                          texto='Aqui não pode HTML')
         rv = self.app.post('/entrada/1', data=comentario,
                                          follow_redirects=True)
         for conteudo in comentario.values():

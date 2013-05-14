@@ -10,13 +10,23 @@
 
 <p>Post #{{ entrada.id }}</p>
 
+{% if entrada.comentarios %}
+<dl>
+  {% for comentario in entrada.comentarios %}
+  <dt>{{ comentario.nome }} &lt;{{ comentario.email }}&gt;</dt>
+    <dd>{{ comentario.texto }}</dd>
+  {% endfor %}
+</dl>
+
+{% endif %}
+
 <hr>
 {% from "_form_helpers.html" import render_field %}
 <form method="post" action="/entrada/{{ entrada.id }}">
   <dl>
     {{ render_field(form.nome) }}
     {{ render_field(form.email) }}
-    {{ render_field(form.comentario) }}
+    {{ render_field(form.texto) }}
   </dl>
   <p><input type="submit" value="Enviar">
 </form>

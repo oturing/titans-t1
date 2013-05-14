@@ -23,27 +23,8 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 db = SQLAlchemy(app)
 
-'''
-create table entradas (
-  id integer primary key autoincrement,
-  titulo string not null,
-  texto string not null
-);
-'''
-
-class Post(db.Model):
-    __tablename__ = 'postagens'
-
-    id = db.Column(db.Integer, primary_key=True)
-    titulo = db.Column(db.String(128), unique=True)
-    texto = db.Column(db.String(2048))
-
-    def __init__(self, titulo, texto):
-        self.titulo = titulo
-        self.texto = texto
-
-    def __repr__(self):
-        return '<Post %r>' % self.id
+# XXX: isto está aqui para contornar o problema do import circular
+import models
 
 
 ################################################# Configuração
@@ -55,7 +36,7 @@ def criar_bd():
 
 def obter_entradas():
     '''select titulo, texto from entradas order by id desc'''
-    return Post.query.order_by(Post.id.desc())
+    return models.Post.query.order_by(models.Post.id.desc())
 
 @app.route('/')
 def exibir_entradas():
@@ -88,7 +69,7 @@ def inserir_entrada():
 
     '''insert into entradas (titulo, texto) values (?, ?)'''
 
-    post = Post(request.form['titulo'], request.form['texto'])
+    post = models.Post(request.form['titulo'], request.form['texto'])
     db.session.add(post)
     db.session.commit()
 
@@ -97,13 +78,14 @@ def inserir_entrada():
 
 @app.route('/entrada/<int:post_id>', methods=['GET', 'POST'])
 def exibir_detalhe_entrada(post_id):
-    post = Post.query.get_or_404(post_id)
+    post = models.Post.query.get_or_404(post_id)
 
     form = forms.ComentarioForm(request.form)
     if request.method == 'POST' and form.validate():
-        #comentario = Comentario(form.username.data, form.email.data,
-        #            form.password.data)
-        #db_session.add(user)
+        comentario = models.Comentario(post_id,
+                        form.nome.data, form.email.data,
+                        form.texto.data)
+        db.session.add(comentario)
         flash(u'Grato por seu comentário')
 
     return render_template('entrada_detalhe.html', entrada=post, form=form)
