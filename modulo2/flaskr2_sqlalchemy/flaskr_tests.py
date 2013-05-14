@@ -77,5 +77,11 @@ class FlaskrTestCase(unittest.TestCase):
         self.assertIn(b'&lt;Oi&gt;', rv.data)
         self.assertIn(b'<p>Corpo do post</p>', rv.data)
 
+    def teste_form_comentario_entrada(self):
+        rv = self.postar('Oi', 'Corpo do post')
+        rv = self.app.get('/entrada/1')
+        self.assertIn(b'<form', rv.data)
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -8,6 +8,8 @@ from flask import Flask, request, session, g, redirect, url_for, \
 
 from flask.ext.sqlalchemy import SQLAlchemy
 
+import forms
+
 # configuração
 DATABASE = '/tmp/flaskr.db'
 DEBUG = True
@@ -93,12 +95,19 @@ def inserir_entrada():
     flash('Nova entrada registrada com sucesso')
     return redirect(url_for('exibir_entradas'))
 
-@app.route('/entrada/<int:post_id>')
+@app.route('/entrada/<int:post_id>', methods=['GET', 'POST'])
 def exibir_detalhe_entrada(post_id):
-    post = Post.query.get(post_id)
-    if post is None:
-        abort(404)
-    return render_template('entrada_detalhe.html', entrada=post)
+    post = Post.query.get_or_404(post_id)
+
+    form = forms.ComentarioForm(request.form)
+    if request.method == 'POST' and form.validate():
+        #comentario = Comentario(form.username.data, form.email.data,
+        #            form.password.data)
+        #db_session.add(user)
+        flash(u'Grato por seu comentário')
+
+    return render_template('entrada_detalhe.html', entrada=post, form=form)
+
 
 
 if __name__ == '__main__':

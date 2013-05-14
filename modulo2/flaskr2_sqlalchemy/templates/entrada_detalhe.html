@@ -10,4 +10,16 @@
 
 <p>Post #{{ entrada.id }}</p>
 
+<hr>
+{% from "_form_helpers.html" import render_field %}
+<form method="post" action="/entrada/{{ entrada.id }}">
+  <dl>
+    {{ render_field(form.nome) }}
+    {{ render_field(form.email) }}
+    {{ render_field(form.comentario) }}
+  </dl>
+  <p><input type="submit" value="Enviar">
+</form>
+
+
 {% endblock %}
