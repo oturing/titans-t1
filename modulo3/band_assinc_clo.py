@@ -26,11 +26,10 @@ def salvar_bandeira(nome, img):
     with open('bandeiras/' + nome, 'wb') as saida:
         saida.write(img)
 
-def tratar_resposta(response):
-    nome = response.request.url[len(URL_FLAGS):]
+def tratar_resposta(response, num, nome):
     if not response.error:
         img = response.body
-        print '\tsalvando', len(img), 'bytes em', nome
+        print '\t', num, nome
         salvar_bandeira(nome, img)
     else:
         print '***', response.error
@@ -38,12 +37,21 @@ def tratar_resposta(response):
     if not pendentes:
         ioloop.IOLoop.instance().stop()
 
+def faz_tratar_resposta(num, nome):
+    def _tratar_resposta(response):
+        tratar_resposta(response, num, nome)
+    return _tratar_resposta
+
+# ou entao...
+def faz_tratar_resposta(num, nome):
+    return lambda response: tratar_resposta(response, num, nome)
+
 def baixar_bandeiras(lista_nomes, qtd_max=10):
     cliente = httpclient.AsyncHTTPClient()
-    for nome in lista_nomes[:qtd_max]:
-        print 'requisitando:', nome
+    for i, nome in enumerate(lista_nomes[:qtd_max], 1):
+        print i, nome
         pendentes.add(nome)
-        cliente.fetch(URL_FLAGS + nome, tratar_resposta)
+        cliente.fetch(URL_FLAGS + nome, faz_tratar_resposta(i, nome))
 
     ioloop.IOLoop.instance().start()
 
@@ -51,3 +59,5 @@ def baixar_bandeiras(lista_nomes, qtd_max=10):
 res = obter_nomes()
 print len(res), 'bandeiras conhecidas'
 baixar_bandeiras(res)
+
+
