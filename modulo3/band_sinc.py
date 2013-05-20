@@ -23,15 +23,16 @@ def buscar_bandeira(nome):
         img = cnx.read()
     return img
 
-def salvar_bandeira(nome, img):
+def salvar_bandeira(num, nome, img):
     with open('bandeiras/' + nome, 'wb') as saida:
         saida.write(img)
+        print '\t', num, nome
 
 def baixar_bandeiras(lista_nomes, qtd_max=10):
-    for nome in lista_nomes[:qtd_max]:
+    for i, nome in enumerate(lista_nomes[:qtd_max], 1):
+        print i, nome
         img = buscar_bandeira(nome)
-        print len(img), 'bytes em', nome
-        salvar_bandeira(nome, img)
+        salvar_bandeira(i, nome, img)
 
 
 res = obter_nomes()
