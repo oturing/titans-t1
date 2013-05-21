@@ -7,7 +7,7 @@ from urllib import urlopen
 from contextlib import closing
 import re
 
-from tornado import httpclient, ioloop
+from tornado import httpclient, ioloop, gen
 
 URL_BASE = 'https://www.cia.gov/library/publications/the-world-factbook/'
 
@@ -26,11 +26,13 @@ def salvar_bandeira(nome, img):
     with open('bandeiras/' + nome, 'wb') as saida:
         saida.write(img)
 
-def tratar_resposta(response):
-    nome = response.request.url[len(URL_FLAGS):]
+@gen.engine
+def buscar_e_tratar_resposta(cliente, num, nome):
+    print num, nome
+    response = yield gen.Task(cliente.fetch, URL_FLAGS + nome)
     if not response.error:
         img = response.body
-        print '\t', nome
+        print '\t', num, nome
         salvar_bandeira(nome, img)
     else:
         print '***', response.error
@@ -41,9 +43,9 @@ def tratar_resposta(response):
 def baixar_bandeiras(lista_nomes, qtd_max=10):
     cliente = httpclient.AsyncHTTPClient()
     for i, nome in enumerate(lista_nomes[:qtd_max], 1):
-        print i, nome
         pendentes.add(nome)
-        cliente.fetch(URL_FLAGS + nome, tratar_resposta)
+        #cliente.fetch(URL_FLAGS + nome, tratar_resposta)
+        buscar_e_tratar_resposta(cliente, i, nome)
 
     ioloop.IOLoop.instance().start()
 
