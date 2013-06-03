@@ -32,12 +32,12 @@ def main(nome_rdb):
             if not lin:
                 continue
             if lin.startswith(u'@'):
-                nome_tabela, campos_tipos, chaves = analisar_descr(lin)
+                nome_tabela, campos_tipos = analisar_descr(lin)[:2]
                 print nome_tabela
-            else:
-                registro = montar_registro(campos_tipos, lin)
                 tabela = sa.Table(nome_tabela, metadata,
                                 autoload=True, autoload_with=engine)
+            else:
+                registro = montar_registro(campos_tipos, lin)
                 cnx.execute(tabela.insert(), **registro)
 
 if __name__=='__main__':

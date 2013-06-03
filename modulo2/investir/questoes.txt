@@ -1,0 +1,45 @@
+Questões com soluções no livro RDQL
+===================================
+
+1. Quais clientes investiram em quais ações com avaliação "A"?
+
+2. Quais clientes investiram tanto em ações do setor "tecnologia" quanto em fundos com o objetivo "C" (crescimento)?
+
+3. Quais clientes não investiram em fundos com objetivo "R" (renda)?
+
+4. Quais clientes investiram em ações mas não em fundos?
+
+5. Quais clientes têm mais de um tipo de ação sem avaliação ("N/A")?
+
+6. Quais clientes investem em apenas um fundo com objetivo "E" (estabilidade)?
+
+7. Quais fundos têm a menor cotação atual?
+
+8. Quais clientes investiram em todos os fundos da família "Ficcional"?
+
+9. Para cada cliente que investe em ações, exiba o valor mínimo, médio e máximo dos retornos de um ano de suas ações, em ordem ascendente de média dos retornos de um ano.
+
+10. Para cada cliente que investe em fundos, exiba a soma do número de cotas que ele possui em cada categoria de objetivo ("C", "R" ou "E"). Exiba o resultado em ordem descrescente de número de cotas.
+
+Questões sem soluções no livro RDQL
+===================================
+
+11. Quais clientes têm mais de 200 cotas de quais ações?
+    (cod_contribuinte, nome, simbolo, empresa, cotas)
+
+12. Quais ações Gerard melhor retorno em um ano que em cinco anos?
+    (simbolo, empresa, setor, retorno_1a, retorno_5a)
+
+13. Quais clientes não investiram em ações do setor "tecnologia"?
+    (cod_contribuinte, nome)
+
+14. Quais clientes investiram em fundos mas não em ações individuais?
+    (cod_contribuinte, nome)
+
+15. Quais clientes investiram em mais de um fundo com objetivo "C" (crescimento)?
+    (cod_contribuinte, nome)
+
+16. Quais clientes possuem apenas uma ação com avaliação "A"?
+    (cod_contribuinte, nome)
+
+
