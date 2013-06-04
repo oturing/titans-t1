@@ -5,21 +5,32 @@ import io, os, csv, cStringIO
 import sqlalchemy as sa
 from sqlalchemy.orm import sessionmaker, mapper
 
-def clientes(sessao, metadata):
+class Cliente(object):
+    """Um cliente de investimentos"""
+
+class Acao(object):
+    """Uma ação negociada na bolsa de valores"""
+
+def clientes(sessao):
     """
     E1. Listar cod_contribuinte e nome de cada cliente com cod_contribuinte >= 3
     """
-    tab_cliente = sa.Table('cliente', metadata, autoload=True)
-
-    class Cliente(object):
-        """Um cliente de investimentos"""
-
-    mapper(Cliente, tab_cliente)
     res = (sessao.query(Cliente.cod_contribuinte, Cliente.nome)
                  .filter(Cliente.cod_contribuinte >= 3)
           )
     for cli in res:
         print cli.cod_contribuinte, cli.nome
+
+def acoes_tecnologia(sessao):
+    """
+    E2. Listar simbolos das acoes do setor "tecnologia"
+    """
+    res = (sessao.query(Acao.simbolo)
+                 .filter_by(setor = "tecnologia")
+          )
+    for acao in res:
+        print acao.simbolo
+
 
 def main(nome_rdb):
     """
@@ -32,7 +43,13 @@ def main(nome_rdb):
     Session = sessionmaker(bind=engine)
     sessao = Session(bind=cnx)
 
-    clientes(sessao, metadata)
+    tab_cliente = sa.Table('cliente', metadata, autoload=True)
+    mapper(Cliente, tab_cliente)
+    tab_acao = sa.Table('acao', metadata, autoload=True)
+    mapper(Acao, tab_acao)
+
+    clientes(sessao)
+    acoes_tecnologia(sessao)
 
 
 if __name__=='__main__':
