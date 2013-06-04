@@ -5,12 +5,6 @@ import io, os, csv, cStringIO
 import sqlalchemy as sa
 from sqlalchemy.orm import sessionmaker, mapper
 
-class Cliente(object):
-    """Um cliente de investimentos"""
-
-class Acao(object):
-    """Uma ação negociada na bolsa de valores"""
-
 def clientes(sessao):
     """
     E1. Listar cod_contribuinte e nome de cada cliente com cod_contribuinte >= 3
@@ -31,6 +25,8 @@ def acoes_tecnologia(sessao):
     for acao in res:
         print acao.simbolo
 
+Cliente = type('Cliente',(),{})
+Acao = type('Acao',(),{})
 
 def main(nome_rdb):
     """
@@ -43,10 +39,8 @@ def main(nome_rdb):
     Session = sessionmaker(bind=engine)
     sessao = Session(bind=cnx)
 
-    tab_cliente = sa.Table('cliente', metadata, autoload=True)
-    mapper(Cliente, tab_cliente)
-    tab_acao = sa.Table('acao', metadata, autoload=True)
-    mapper(Acao, tab_acao)
+    mapper(Cliente, sa.Table('cliente', metadata, autoload=True))
+    mapper(Acao, sa.Table('acao', metadata, autoload=True))
 
     clientes(sessao)
     acoes_tecnologia(sessao)
