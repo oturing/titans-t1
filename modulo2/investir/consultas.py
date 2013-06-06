@@ -17,6 +17,16 @@ def clientes(sessao):
     for cli in res:
         print cli.cod_contribuinte, cli.nome
 
+def acoes_tecnologia(sessao):
+    """
+    E2. Listar simbolos das acoes do setor "tecnologia"
+    """
+    res = (sessao.query(Acao.simbolo)
+                 .filter_by(setor = "tecnologia")
+          )
+    for acao in res:
+        print acao.simbolo
+
 def criar_sessao(url_bd, echo=False):
     engine = sa.create_engine(url_bd, echo=echo)
     cnx = engine.connect()
@@ -27,8 +37,8 @@ def main():
     url = 'sqlite:///investir.sqlite'
     sessao = criar_sessao(url)
 
-    clientes(sessao)
-    #acoes_tecnologia(sessao)
+    #clientes(sessao)
+    acoes_tecnologia(sessao)
 
 
 if __name__=='__main__':
