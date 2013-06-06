@@ -3,7 +3,9 @@
 import io, os, csv, cStringIO
 
 import sqlalchemy as sa
-from sqlalchemy.orm import sessionmaker, mapper
+from sqlalchemy.orm import sessionmaker
+
+from modelos import Cliente
 
 def clientes(sessao):
     """
@@ -15,35 +17,22 @@ def clientes(sessao):
     for cli in res:
         print cli.cod_contribuinte, cli.nome
 
-def acoes_tecnologia(sessao):
-    """
-    E2. Listar simbolos das acoes do setor "tecnologia"
-    """
-    res = (sessao.query(Acao.simbolo)
-                 .filter_by(setor = "tecnologia")
-          )
-    for acao in res:
-        print acao.simbolo
+def criar_sessao(url_bd):
+    engine = sa.create_engine(url_bd, echo=True)
+    cnx = engine.connect()
+    Session = sessionmaker(bind=engine)
+    return Session(bind=cnx)
 
-Cliente = type('Cliente',(),{})
-Acao = type('Acao',(),{})
 
 def main(nome_rdb):
     """
     Lê dados de um arquivo .rdb e insere nas tabelas apropriadas
     """
-    uri = 'sqlite:///%s.sqlite' % (os.path.splitext(nome_rdb)[0])
-    engine = sa.create_engine(uri, echo=True)
-    metadata = sa.MetaData(bind=engine)
-    cnx = engine.connect()
-    Session = sessionmaker(bind=engine)
-    sessao = Session(bind=cnx)
-
-    mapper(Cliente, sa.Table('cliente', metadata, autoload=True))
-    mapper(Acao, sa.Table('acao', metadata, autoload=True))
+    url = 'sqlite:///%s.sqlite' % (os.path.splitext(nome_rdb)[0])
+    sessao = criar_sessao(url)
 
     clientes(sessao)
-    acoes_tecnologia(sessao)
+    #acoes_tecnologia(sessao)
 
 
 if __name__=='__main__':
