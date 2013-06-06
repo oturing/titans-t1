@@ -17,18 +17,14 @@ def clientes(sessao):
     for cli in res:
         print cli.cod_contribuinte, cli.nome
 
-def criar_sessao(url_bd):
-    engine = sa.create_engine(url_bd, echo=True)
+def criar_sessao(url_bd, echo=False):
+    engine = sa.create_engine(url_bd, echo=echo)
     cnx = engine.connect()
     Session = sessionmaker(bind=engine)
     return Session(bind=cnx)
 
-
-def main(nome_rdb):
-    """
-    Lê dados de um arquivo .rdb e insere nas tabelas apropriadas
-    """
-    url = 'sqlite:///%s.sqlite' % (os.path.splitext(nome_rdb)[0])
+def main():
+    url = 'sqlite:///investir.sqlite'
     sessao = criar_sessao(url)
 
     clientes(sessao)
@@ -36,5 +32,4 @@ def main(nome_rdb):
 
 
 if __name__=='__main__':
-    import sys
-    main(sys.argv[1])
+    main()
