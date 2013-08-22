@@ -42,9 +42,8 @@ def get_db(country=None):
     """Opens a new database connection if there is none yet for the
     current application context.
     """
-    # XXX: provisorio! Tirar este default quando pudermos acessar o country no request
     if country is None:
-        country = 'BR'
+        country = g.country
     top = _app_ctx_stack.top
     if not hasattr(top, 'sqlite_db'):
         sqlite_db = sqlite3.connect(path.join(country,app.config['DATABASE']))
@@ -53,6 +52,9 @@ def get_db(country=None):
 
     return top.sqlite_db
 
+@app.before_request
+def before_request():
+    g.country = 'BR'
 
 @app.teardown_appcontext
 def close_db_connection(exception):
