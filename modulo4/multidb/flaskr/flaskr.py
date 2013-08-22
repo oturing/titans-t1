@@ -10,6 +10,8 @@
     :license: BSD, see LICENSE for more details.
 """
 
+from os import path
+
 from sqlite3 import dbapi2 as sqlite3
 from flask import Flask, request, session, g, redirect, url_for, abort, \
      render_template, flash, _app_ctx_stack
@@ -27,22 +29,25 @@ app.config.from_object(__name__)
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 
 
-def init_db():
+def init_db(country):
     """Creates the database tables."""
     with app.app_context():
-        db = get_db()
+        db = get_db(country)
         with app.open_resource('schema.sql', mode='r') as f:
             db.cursor().executescript(f.read())
         db.commit()
 
 
-def get_db():
+def get_db(country=None):
     """Opens a new database connection if there is none yet for the
     current application context.
     """
+    # XXX: provisorio! Tirar este default quando pudermos acessar o country no request
+    if country is None:
+        country = 'BR'
     top = _app_ctx_stack.top
     if not hasattr(top, 'sqlite_db'):
-        sqlite_db = sqlite3.connect(app.config['DATABASE'])
+        sqlite_db = sqlite3.connect(path.join(country,app.config['DATABASE']))
         sqlite_db.row_factory = sqlite3.Row
         top.sqlite_db = sqlite_db
 
