@@ -11,6 +11,7 @@
 """
 
 from os import path
+import urllib
 
 from sqlite3 import dbapi2 as sqlite3
 from flask import Flask, request, session, g, redirect, url_for, abort, \
@@ -54,7 +55,7 @@ def get_db(country=None):
 
 @app.before_request
 def before_request():
-    g.country = 'BR'
+    g.country = request.values.get('country')
 
 @app.teardown_appcontext
 def close_db_connection(exception):
@@ -95,7 +96,7 @@ def login():
         else:
             session['logged_in'] = True
             flash('You were logged in')
-            return redirect(url_for('show_entries'))
+            return redirect(url_for('show_entries')+urllib.urlencode({'country':g.country}))
     return render_template('login.html', error=error)
 
 
