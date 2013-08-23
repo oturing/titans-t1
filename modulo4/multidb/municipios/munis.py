@@ -13,6 +13,9 @@ app.config.from_pyfile('munis.cfg')
 
 db = SQLAlchemy(app)
 
+def criar_binds():
+    '''TODO: ler diretorio db/ e criar binds para cada database encontrado'''
+
 def criar_bd():
     siglas_uf = set()
     with open('dados/ibge.json') as entrada:
