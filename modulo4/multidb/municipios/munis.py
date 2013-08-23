@@ -1,16 +1,30 @@
 import json
+import os
 
 from flask import Flask, request, flash, url_for, redirect, \
      render_template, abort
 
 from flask_sqlalchemy import SQLAlchemy
 
+from pprint import pprint
+
 app = Flask(__name__)
 app.config.from_pyfile('munis.cfg')
+
 db = SQLAlchemy(app)
 
 def criar_bd():
-    db.create_all()
+    siglas_uf = set()
+    with open('dados/ibge.json') as entrada:
+        registros = json.load(entrada)
+    for registro in registros:
+        if registro['model'] == 'municipios.mesoregiao':
+            siglas_uf.add(registro['fields']['uf'])
+    binds = app.config['SQLALCHEMY_BINDS']
+    for sigla in siglas_uf:
+        binds[sigla] = 'sqlite:///'+ os.path.join(app.config['PATH_DBS'], sigla.lower()+'.sqlite')
+        db.create_all(bind=sigla)
+        print 'db', sigla, 'criado'
 
 def carregar_bd(uf):
     with open('dados/ibge.json') as entrada:
