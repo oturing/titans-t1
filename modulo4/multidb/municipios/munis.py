@@ -7,6 +7,9 @@ app = Flask(__name__)
 app.config.from_pyfile('munis.cfg')
 db = SQLAlchemy(app)
 
+def criar_bd():
+    db.create_all()
+
 class Municipio(db.Model):
     __tablename__ = 'municipios'
     id = db.Column('id', db.Integer, primary_key=True)
