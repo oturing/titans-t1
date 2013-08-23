@@ -1,3 +1,5 @@
+import json
+
 from flask import Flask, request, flash, url_for, redirect, \
      render_template, abort
 
@@ -9,6 +11,21 @@ db = SQLAlchemy(app)
 
 def criar_bd():
     db.create_all()
+
+def carregar_bd(uf):
+    with open('dados/ibge.json') as entrada:
+        registros = json.load(entrada)
+        contador = 0
+        for registro in registros:
+            if registro['model'] == 'municipios.municipio':
+                if registro['fields']['uf'] == uf:
+                    muni = Municipio(registro['fields']['nome'],
+                                     uf,
+                                     registro['fields']['capital'])
+                    db.session.add(muni)
+                    db.session.commit()
+                    contador += 1
+        print contador, 'registros inseridos'
 
 class Municipio(db.Model):
     __tablename__ = 'municipios'
